@@ -10,4 +10,11 @@ class Product extends Model
         'title', 'sku', 'description'
     ];
 
+    /**
+     * Get the variants for the blog post.
+     */
+    public function ProductVariantPrice()
+    {
+        return $this->hasMany('App\Models\ProductVariantPrice');
+    }
 }
