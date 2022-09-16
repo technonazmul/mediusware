@@ -75,7 +75,8 @@
                     @endphp
                     @foreach ($products as $item)
                     <tr>
-                        <td>{{$i}}</td>
+                        <td>{{$i}}
+                        </td>
                         <td>{{$item->title}} <br> Created at : @php echo date('d-M-Y', strtotime($item->created_at));  @endphp</td>
                         <td>{{$item->description}}</td>
                         <td>
@@ -128,9 +129,11 @@
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm">
-                                <a href="{{ route('product.edit', 1) }}" class="btn btn-success">Edit</a>
+                                <a href="{{ route('product.edit', $item->id) }}" class="btn btn-success">Edit</a>
+                                <a href="{{ route('product.delete', $item->id) }}" class="btn btn-danger" onclick="return confirm(' you want to delete?');">Delete</a>
                             </div>
                         </td>
+                        
                     </tr>
                     @php
                         $i++;

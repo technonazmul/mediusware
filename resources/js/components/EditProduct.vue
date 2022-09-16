@@ -4,8 +4,12 @@
             <div class="col-md-6">
                 <div class="card shadow mb-4">
                     <div class="card-body">
+                        <p v-if="success == true" class="alert-success">
+                            Updated Successfully
+                        </p>
+                        <p v-else></p>
                         <div class="form-group">
-                            <label for="">Product Name</label>
+                            <label for="">Product Name </label>
                             <input
                                 type="text"
                                 v-model="product_name"
@@ -34,12 +38,28 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="card p-5">
+                    <h2>Images</h2>
+                    <div class="row">
+                        <div v-for="imagesingle in oldImages" class="m-2 col-3">
+                            <img
+                                :src="
+                                    'http://127.0.0.1:8000/storage/uploads/' +
+                                        imagesingle
+                                "
+                                alt=""
+                                width="100"
+                            />
+                        </div>
+                    </div>
+                </div>
                 <div class="card shadow mb-4">
                     <div
                         class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
                     >
-                        <h6 class="m-0 font-weight-bold text-primary">Media</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            New Media
+                        </h6>
                     </div>
                     <div class="card-body border">
                         <vue-dropzone
@@ -163,7 +183,7 @@
             type="submit"
             class="btn btn-lg btn-primary"
         >
-            Save
+            Update
         </button>
         <button type="button" class="btn btn-secondary btn-lg">Cancel</button>
     </section>
@@ -183,27 +203,39 @@ export default {
         variants: {
             type: Array,
             required: true
+        },
+        product: {
+            type: Object,
+            required: true
+        },
+        productvariantprice: {
+            type: Array
+        },
+        productvariantarr: {
+            type: Array
+        },
+        productimages: {
+            type: Array
         }
     },
     data() {
         return {
-            product_name: "",
-            product_sku: "",
-            description: "",
+            product_name: this.product.title,
+            product_sku: this.product.sku,
+            description: this.product.description,
             images: [],
-            product_variant: [
-                {
-                    option: this.variants[0].id,
-                    tags: []
-                }
-            ],
-            product_variant_prices: [],
+            oldImages: this.productimages,
+            product_variant: this.productvariantarr,
+            product_variant_prices: this.productvariantprice,
             dropzoneOptions: {
-                url: "https://httpbin.org/post",
+                url: "http://127.0.0.1:8000/imageupload",
                 thumbnailWidth: 150,
                 maxFilesize: 0.5,
-                headers: { "My-Awesome-Header": "header value" }
-            }
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                }
+            },
+            success: null
         };
     },
     methods: {
@@ -266,15 +298,16 @@ export default {
             };
 
             axios
-                .post("/product", product)
+                .put("/product/" + this.product.id, product)
                 .then(response => {
                     console.log(response.data);
+                    this.success = true;
                 })
                 .catch(error => {
                     console.log(error);
                 });
 
-            console.log(product);
+            //console.log(this.product_variant);
         },
         afterUploadComplete: async function(response) {
             if (response.status == "success") {

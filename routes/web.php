@@ -28,4 +28,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('blog', 'BlogController');
     Route::resource('blog-category', 'BlogCategoryController');
     Route::get('/product-filter', 'ProductController@filter')->name('product.filter');
+    Route::get('/product-delete/{id}', 'ProductController@delete')->name('product.delete');
+    Route::post('/imageupload', 'ProductController@imageUpload')->name('image.upload');
 });
